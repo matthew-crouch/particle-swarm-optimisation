@@ -1,0 +1,16 @@
+black==25.1.0
+click==8.1.8
+iniconfig==2.0.0
+mypy-extensions==1.0.0
+numpy==2.2.2
+packaging==24.2
+pandas==2.2.3
+pathspec==0.12.1
+platformdirs==4.3.6
+pluggy==1.5.0
+pyswarm==0.6
+pytest==8.3.4
+python-dateutil==2.9.0.post0
+pytz==2024.2
+six==1.17.0
+tzdata==2025.1
