@@ -15,11 +15,26 @@ def generate_large_config():
 
 
 class ParticleSwarmOptimisation:
+    """Particle Swarm Optimisation Algorithm
+
+    This class will try to find the least explored configuration for a given search space
+    """
+
     def __init__(self, search_space: dict, n_particles: int):
+        """Initialise the Particle Swarm Optimisation Class
+
+        :param search_space: The search space to explore
+        :param n_particles: The number of particles to use
+        """
         self.particles = self._intialise_the_swarm(search_space, n_particles)
 
-    def _intialise_the_swarm(self, search_space, n_particles):
-        """Initialise the swarm"""
+    def _intialise_the_swarm(self, search_space: dict, n_particles: int):
+        """Initialise the swarm
+
+        :param search_space: The search space to explore
+        :param n_particles: The number of particles to use
+        :return: The initial particles
+        """
         particles = np.random.sample(search_space, n_particles)
         return particles
 
