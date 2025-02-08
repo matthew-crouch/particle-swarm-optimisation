@@ -1,9 +1,10 @@
 """Particle Swarm Optimisation From Scratch"""
 
-import numpy as np
-import random
-from pydantic import BaseModel, ConfigDict
 import logging
+from collections.abc import Callable
+
+import numpy as np
+from pydantic import BaseModel, ConfigDict
 
 logging.basicConfig(level=logging.INFO)
 
@@ -40,15 +41,14 @@ class ParticleSwarmOptimisation:
     This class will try to find the least explored configuration for a given search space
     """
 
-    def __init__(self, swarm_configuration: SwarmConfig, custom_fitness_function=None):
+    def __init__(self, swarm_configuration: SwarmConfig, custom_fitness_function: Callable):
         """Initialise the Particle Swarm Optimisation Class
 
         :param search_space: The search space to explore
         :param n_particles: The number of particles to use
         """
         self.config = SwarmConfig(**swarm_configuration)
-        if custom_fitness_function:
-            self.fitness_function = custom_fitness_function
+        self.fitness_function = custom_fitness_function
         self.swarm_func = self._intialise_the_swarm()
 
     def _intialise_the_swarm(self) -> SwarmCoord:
@@ -59,13 +59,13 @@ class ParticleSwarmOptimisation:
             (self.config.n_particles, self.config.n_dimensions),
         )
 
-        vel = (
-            np.random.randn(self.config.n_particles, self.config.n_dimensions)
-            * self.config.std
-        )
+        vel = np.random.randn(self.config.n_particles, self.config.n_dimensions) * self.config.std
         particle_best = pos.copy()
-        particle_best_objective = np.apply_along_axis(self.fitness_function, 1, pos)
-        best_idx = np.argmin(particle_best_objective)
+        particle_best_objective = self.fitness_function(pos)
+        best_idx = np.unravel_index(
+            np.argmin(particle_best_objective), particle_best_objective.shape
+        )
+
         return SwarmCoord(
             particle_best=particle_best,
             particle_best_objective=particle_best_objective,
@@ -74,23 +74,6 @@ class ParticleSwarmOptimisation:
             position=pos,
             velocity=vel,
         )
-
-    def fitness_function(self, position) -> float:
-        """The fitness function to be minimised
-
-        For categorical variables and search space configurations,
-        we will aim to calculate the exploration count. We will want
-        to move towards configurations with lower exploration count
-
-        There are different options we can consider here depending on the
-        problem we would like to solve.
-            1. Exploration Count
-            2. Similarity-Based Fitness Function
-            3. Bayesian Optimisation
-        """
-        # For testing purposes we choose an arbitary function. Eventually this will be replaced
-        # or allow users to customise
-        return np.sum((position - 3.14) ** 2) + np.sum(np.sin(3 * position + 1))
 
     def update(self) -> None:
         """Function to update SwarmCoordinates"""
@@ -114,9 +97,7 @@ class ParticleSwarmOptimisation:
         )
 
         # Compute new objective values
-        objective = np.apply_along_axis(
-            self.fitness_function, 1, self.swarm_func.position
-        )
+        objective = self.fitness_function(self.swarm_func.position)
 
         # Update best particle positions where the objective improved
         improved = objective < self.swarm_func.particle_best_objective
@@ -124,24 +105,25 @@ class ParticleSwarmOptimisation:
         self.swarm_func.particle_best_objective[improved] = objective[improved]
 
         # Update global best
-        best_idx = np.argmin(self.swarm_func.particle_best_objective)
+        best_idx = np.unravel_index(
+            np.argmin(self.swarm_func.particle_best_objective),
+            self.swarm_func.particle_best_objective.shape,
+        )
         if (
             self.swarm_func.particle_best_objective[best_idx]
             < self.swarm_func.global_best_objective
         ):
             self.swarm_func.global_best = self.swarm_func.particle_best[best_idx].copy()
-            self.swarm_func.global_best_objective = (
-                self.swarm_func.particle_best_objective[best_idx]
-            )
+            self.swarm_func.global_best_objective = self.swarm_func.particle_best_objective[
+                best_idx
+            ]
 
-    def run(
-        self, max_iterations: int, tolerance: float = 1e-6
-    ) -> tuple[np.array, np.array]:
+    def run(self, max_iterations: int, tolerance: float = 1e-6) -> tuple[np.array, np.array]:
         prev_best = self.swarm_func.global_best_objective
         for _ in range(max_iterations):
             self.update()
             if abs(prev_best - self.swarm_func.global_best_objective) < tolerance:
-                logging.info("PSO Algorithm has converged.")
+                logging.info(" PSO Algorithm has converged.")
                 break
             prev_best = self.swarm_func.global_best_objective
         return self.swarm_func.global_best, self.swarm_func.global_best_objective
