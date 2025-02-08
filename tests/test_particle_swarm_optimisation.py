@@ -5,43 +5,32 @@ from pso.particle_swarm_optimisation import (
 )
 import numpy as np
 
+config = {
+    "n_particles": 20,
+    "lower_bound": 0,
+    "upper_bound": 5,
+    "std": 0.1,
+    "inertia_weight": 0.8,
+    "cognitive_coeff": 0.1,
+    "social_coeff": 0.1,
+    "n_dimensions": 20,
+}
+
 
 def test_particle_swarm_optimisation():
     """Test the Particle Swarm Optimisation Algorithm"""
-    config = {
-        "n_particles": 20,
-        "upper_bound": 5,
-        "std": 0.1,
-        "inertia_weight": 0.8,
-        "cognative_coeff": 0.1,
-        "social_coeff": 0.1,
-    }
     pso = ParticleSwarmOptimisation(swarm_configuration=config)
-    pso.run(n_interations=100)
+    pso.run(max_iterations=100)
 
 
 def test_initialise_swarm():
-    config = {
-        "n_particles": 20,
-        "upper_bound": 5,
-        "std": 0.1,
-        "inertia_weight": 0.8,
-        "cognative_coeff": 0.1,
-        "social_coeff": 0.1,
-    }
+    """Test the swarm is initialised correctly"""
     pso = ParticleSwarmOptimisation(swarm_configuration=config)
     assert pso.swarm_func is not None
 
 
 def test_update_swarm():
-    config = {
-        "n_particles": 20,
-        "upper_bound": 5,
-        "std": 0.1,
-        "inertia_weight": 0.8,
-        "cognative_coeff": 0.1,
-        "social_coeff": 0.1,
-    }
+    """Test that the swarm it updated"""
     pso = ParticleSwarmOptimisation(swarm_configuration=config)
     initial_pos = pso.swarm_func.particle_best.copy()
     pso.update()
