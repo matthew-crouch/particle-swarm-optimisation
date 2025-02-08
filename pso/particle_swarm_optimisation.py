@@ -84,6 +84,8 @@ class ParticleSwarmOptimisation:
             2. Similarity-Based Fitness Function
             3. Bayesian Optimisation
         """
+        # For testing purposes we choose an arbitary function. Eventually this will be replaced
+        # or allow users to customise
         return (x - 3.14) ** 2 + (y - 2) ** 2 + np.sin(3 * x + 1) + np.sin(4 * y - 1.7)
 
     def update(self) -> None:
