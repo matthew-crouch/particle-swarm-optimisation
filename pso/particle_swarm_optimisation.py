@@ -71,10 +71,6 @@ class ParticleSwarmOptimisation:
             velocity=vel,
         )
 
-    def update_best_values(self):
-        """Update the best values for each particle and the global best value"""
-        raise NotImplementedError
-
     def fitness_function(self, x, y):
         """The fitness function to be minimised
 
@@ -89,9 +85,6 @@ class ParticleSwarmOptimisation:
             3. Bayesian Optimisation
         """
         return (x - 3.14) ** 2 + (y - 2) ** 2 + np.sin(3 * x + 1) + np.sin(4 * y - 1.7)
-
-    def evaluate(self, x):
-        raise NotImplementedError
 
     def update(self) -> None:
         """Function to update SwarmCoordinates"""
@@ -129,5 +122,6 @@ class ParticleSwarmOptimisation:
             self.swarm_func.particle_best_objective.min()
         )
 
-    def optimise(self, n_iterations):
-        raise NotImplementedError
+    def run(self, n_interations: int) -> None:
+        for i in range(n_interations):
+            self.update()

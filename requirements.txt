@@ -1,3 +1,4 @@
+annotated-types==0.7.0
 anyio==4.8.0
 argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
@@ -17,6 +18,7 @@ comm==0.2.2
 debugpy==1.8.12
 decorator==5.1.1
 defusedxml==0.7.1
+execnet==2.1.1
 executing==2.2.0
 fastjsonschema==2.21.1
 fqdn==1.5.1
@@ -73,9 +75,14 @@ psutil==6.1.1
 ptyprocess==0.7.0
 pure_eval==0.2.3
 pycparser==2.22
+pydantic==2.10.6
+pydantic_core==2.27.2
 Pygments==2.19.1
 pyswarm==0.6
 pytest==8.3.4
+pytest-flakefinder==1.1.0
+pytest-randomly==3.16.0
+pytest-xdist==3.6.1
 python-dateutil==2.9.0.post0
 python-json-logger==3.2.1
 pytz==2024.2
