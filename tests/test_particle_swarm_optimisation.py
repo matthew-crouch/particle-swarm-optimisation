@@ -1,6 +1,7 @@
 """Test Particle Swarm Optimisation"""
 
 import numpy as np
+import pytest
 
 from pso.particle_swarm_optimisation import (
     ParticleSwarmOptimisation,
@@ -14,7 +15,6 @@ config = {
     "inertia_weight": 0.8,
     "cognitive_coeff": 0.1,
     "social_coeff": 0.1,
-    "n_dimensions": 2,
 }
 
 
@@ -22,15 +22,25 @@ def dummy_fitness_func(x):
     return (x - 3.14) ** 2 + np.sin(3 * x + 1.41)
 
 
-def test_particle_swarm_optimisation():
+def dummy_fitness_func2(pos):
+    x = pos[:, 0]
+    y = pos[:, 1]
+    return (x - 3.14) ** 2 + (y - 2.72) ** 2 + np.sin(3 * x + 1.41) + np.sin(4 * y - 1.73)
+
+
+@pytest.mark.parametrize("n_dimensions", [1])
+def test_particle_swarm_optimisation(n_dimensions):
     """Test the Particle Swarm Optimisation Algorithm"""
-    pso = ParticleSwarmOptimisation(
-        swarm_configuration=config, custom_fitness_function=dummy_fitness_func
-    )
+    config["n_dimensions"] = n_dimensions
+
+    func = dummy_fitness_func if n_dimensions == 1 else dummy_fitness_func2
+
+    pso = ParticleSwarmOptimisation(swarm_configuration=config, custom_fitness_function=func)
     global_best, global_best_objective = pso.run(max_iterations=100000)
 
-    assert np.isclose(global_best, 3.1849, rtol=1e-1)
-    assert np.isclose(global_best_objective, -0.9975, rtol=1e-1)
+    if n_dimensions == 1:
+        assert np.isclose(global_best, 3.1849, rtol=1e-1)
+        assert np.isclose(global_best_objective, -0.9975, rtol=1e-1)
 
 
 def test_initialise_swarm():

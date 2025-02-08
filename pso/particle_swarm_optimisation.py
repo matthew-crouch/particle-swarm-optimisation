@@ -62,6 +62,7 @@ class ParticleSwarmOptimisation:
         vel = np.random.randn(self.config.n_particles, self.config.n_dimensions) * self.config.std
         particle_best = pos.copy()
         particle_best_objective = self.fitness_function(pos)
+
         best_idx = np.unravel_index(
             np.argmin(particle_best_objective), particle_best_objective.shape
         )
