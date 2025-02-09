@@ -63,10 +63,7 @@ class ParticleSwarmOptimisation:
         particle_best = pos.copy()
         particle_best_objective = self.fitness_function(pos)
 
-        best_idx = np.unravel_index(
-            np.argmin(particle_best_objective), particle_best_objective.shape
-        )
-
+        best_idx = np.argmin(particle_best_objective)
         return SwarmCoord(
             particle_best=particle_best,
             particle_best_objective=particle_best_objective,
@@ -106,10 +103,7 @@ class ParticleSwarmOptimisation:
         self.swarm_func.particle_best_objective[improved] = objective[improved]
 
         # Update global best
-        best_idx = np.unravel_index(
-            np.argmin(self.swarm_func.particle_best_objective),
-            self.swarm_func.particle_best_objective.shape,
-        )
+        best_idx = np.argmin(self.swarm_func.particle_best_objective)
         if (
             self.swarm_func.particle_best_objective[best_idx]
             < self.swarm_func.global_best_objective

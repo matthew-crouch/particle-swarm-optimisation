@@ -1,6 +1,7 @@
 line-length = 100
 
 [lint]
+exclude = ["*.ipynb"]
 select = [
     # pycodestyle
     "E",
@@ -15,3 +16,4 @@ select = [
     # isort
     "I",
 ]
+

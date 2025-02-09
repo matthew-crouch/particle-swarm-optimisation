@@ -28,7 +28,7 @@ def dummy_fitness_func2(pos):
     return (x - 3.14) ** 2 + (y - 2.72) ** 2 + np.sin(3 * x + 1.41) + np.sin(4 * y - 1.73)
 
 
-@pytest.mark.parametrize("n_dimensions", [1])
+@pytest.mark.parametrize("n_dimensions", [1, 2])
 def test_particle_swarm_optimisation(n_dimensions):
     """Test the Particle Swarm Optimisation Algorithm"""
     config["n_dimensions"] = n_dimensions
@@ -36,11 +36,15 @@ def test_particle_swarm_optimisation(n_dimensions):
     func = dummy_fitness_func if n_dimensions == 1 else dummy_fitness_func2
 
     pso = ParticleSwarmOptimisation(swarm_configuration=config, custom_fitness_function=func)
-    global_best, global_best_objective = pso.run(max_iterations=100000)
+    global_best, global_best_objective = pso.run(max_iterations=1000000)
 
     if n_dimensions == 1:
         assert np.isclose(global_best, 3.1849, rtol=1e-1)
         assert np.isclose(global_best_objective, -0.9975, rtol=1e-1)
+    else:
+        assert np.isclose(global_best[0], 3.1849, rtol=1e-1)
+        assert np.isclose(global_best[1], 3.129, rtol=1e-1)
+        assert np.isclose(global_best_objective, -1.808, rtol=1e-1)
 
 
 def test_initialise_swarm():
