@@ -1,8 +1,9 @@
 line-length = 100
 
 [lint]
-exclude = ["*.ipynb"]
+exclude = ["*.ipynb", "*__init__.py"]
 select = [
+    "D",
     # pycodestyle
     "E",
     # Pyflakes

@@ -1,4 +1,4 @@
-"""Test Particle Swarm Optimisation"""
+"""Test Particle Swarm Optimisation."""
 
 import numpy as np
 import pytest
@@ -18,11 +18,21 @@ config = {
 }
 
 
-def dummy_fitness_func(x):
+def dummy_fitness_func(x: np.ndarray) -> np.ndarray:
+    """Return fitness function.
+
+    :param x: Input array
+    :return: Output array
+    """
     return (x - 3.14) ** 2 + np.sin(3 * x + 1.41)
 
 
-def dummy_fitness_func2(pos):
+def dummy_fitness_func2(pos: np.ndarray) -> np.ndarray:
+    """Return fitness function.
+
+    :param x: Input array
+    :return: Output array
+    """
     x = pos[:, 0]
     y = pos[:, 1]
     return (x - 3.14) ** 2 + (y - 2.72) ** 2 + np.sin(3 * x + 1.41) + np.sin(4 * y - 1.73)
@@ -30,7 +40,7 @@ def dummy_fitness_func2(pos):
 
 @pytest.mark.parametrize("n_dimensions", [1, 2])
 def test_particle_swarm_optimisation(n_dimensions):
-    """Test the Particle Swarm Optimisation Algorithm"""
+    """Test the Particle Swarm Optimisation Algorithm."""
     config["n_dimensions"] = n_dimensions
 
     func = dummy_fitness_func if n_dimensions == 1 else dummy_fitness_func2
@@ -48,7 +58,7 @@ def test_particle_swarm_optimisation(n_dimensions):
 
 
 def test_initialise_swarm():
-    """Test the swarm is initialised correctly"""
+    """Test the swarm is initialised correctly."""
     pso = ParticleSwarmOptimisation(
         swarm_configuration=config, custom_fitness_function=dummy_fitness_func
     )
@@ -56,7 +66,7 @@ def test_initialise_swarm():
 
 
 def test_update_swarm():
-    """Test that the swarm it updated"""
+    """Test that the swarm it updated."""
     pso = ParticleSwarmOptimisation(
         swarm_configuration=config, custom_fitness_function=dummy_fitness_func
     )

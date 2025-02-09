@@ -1,4 +1,4 @@
-"""Particle Swarm Optimisation From Scratch"""
+"""Particle Swarm Optimisation From Scratch."""
 
 import logging
 from collections.abc import Callable
@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 class SwarmConfig(BaseModel):
-    """Configuration defined by the user to initialise the particle swarm"""
+    """Configuration defined by the user to initialise the particle swarm."""
 
     lower_bound: float
     upper_bound: float
@@ -23,7 +23,7 @@ class SwarmConfig(BaseModel):
 
 
 class SwarmCoord(BaseModel):
-    """DataModel to contain particle best and global best"""
+    """DataModel to contain particle best and global best."""
 
     particle_best: np.array
     particle_best_objective: np.array
@@ -36,13 +36,13 @@ class SwarmCoord(BaseModel):
 
 
 class ParticleSwarmOptimisation:
-    """Particle Swarm Optimisation Algorithm
+    """Particle Swarm Optimisation Algorithm.
 
-    This class will try to find the least explored configuration for a given search space
+    This class will try to find the least explored configuration for a given search space.
     """
 
     def __init__(self, swarm_configuration: SwarmConfig, custom_fitness_function: Callable):
-        """Initialise the Particle Swarm Optimisation Class
+        """Initialise the Particle Swarm Optimisation Class.
 
         :param search_space: The search space to explore
         :param n_particles: The number of particles to use
@@ -52,7 +52,7 @@ class ParticleSwarmOptimisation:
         self.swarm_func = self._intialise_the_swarm()
 
     def _intialise_the_swarm(self) -> SwarmCoord:
-        """Initialise the swarm with position and velocity"""
+        """Initialise the swarm with position and velocity."""
         pos = np.random.uniform(
             self.config.lower_bound,
             self.config.upper_bound,
@@ -73,21 +73,11 @@ class ParticleSwarmOptimisation:
             velocity=vel,
         )
 
-    def update(self) -> None:
-        """Function to update SwarmCoordinates"""
-        r1, r2 = np.random.rand(), np.random.rand()
+    def _update_swarm_coords(self):
+        """Evaluate particle positions.
 
-        # Update velocity
-        self.swarm_func.velocity = (
-            self.config.inertia_weight * self.swarm_func.velocity
-            + self.config.cognitive_coeff
-            * r1
-            * (self.swarm_func.particle_best - self.swarm_func.position)
-            + self.config.social_coeff
-            * r2
-            * (self.swarm_func.global_best - self.swarm_func.position)
-        )
-
+        Evaluates and return update particle best and global coords.
+        """
         # Update position and keep within bounds
         self.swarm_func.position += self.swarm_func.velocity
         self.swarm_func.position = np.clip(
@@ -113,7 +103,29 @@ class ParticleSwarmOptimisation:
                 best_idx
             ]
 
+    def update(self) -> None:
+        """Update SwarmCoordinates."""
+        r1, r2 = np.random.rand(), np.random.rand()
+
+        # Update velocity
+        self.swarm_func.velocity = (
+            self.config.inertia_weight * self.swarm_func.velocity
+            + self.config.cognitive_coeff
+            * r1
+            * (self.swarm_func.particle_best - self.swarm_func.position)
+            + self.config.social_coeff
+            * r2
+            * (self.swarm_func.global_best - self.swarm_func.position)
+        )
+        self._update_swarm_coords()
+
     def run(self, max_iterations: int, tolerance: float = 1e-6) -> tuple[np.array, np.array]:
+        """Run function.
+
+        :param max_iterations: The maximum number of iterations to run
+        :param tolerance: The tolerance to stop the algorithm
+        :return: The best position and objective value
+        """
         prev_best = self.swarm_func.global_best_objective
         for _ in range(max_iterations):
             self.update()
