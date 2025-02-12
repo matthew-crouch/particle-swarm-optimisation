@@ -119,7 +119,9 @@ class ParticleSwarmOptimisation:
         )
         self._update_swarm_coords()
 
-    def run(self, max_iterations: int, tolerance: float = 1e-6) -> tuple[np.array, np.array]:
+    def run(
+        self, max_iterations: int, tolerance: float = 1e-9, iter_tolerance: int = 20
+    ) -> tuple[np.array, np.array]:
         """Run function.
 
         :param max_iterations: The maximum number of iterations to run
@@ -127,10 +129,14 @@ class ParticleSwarmOptimisation:
         :return: The best position and objective value
         """
         prev_best = self.swarm_func.global_best_objective
+        count = 0
         for _ in range(max_iterations):
             self.update()
             if abs(prev_best - self.swarm_func.global_best_objective) < tolerance:
-                logging.info(" PSO Algorithm has converged.")
+                count += 1
+
+            if count > iter_tolerance:
+                logging.info(" Global minimum is no longer being updated.")
                 break
             prev_best = self.swarm_func.global_best_objective
         return self.swarm_func.global_best, self.swarm_func.global_best_objective
